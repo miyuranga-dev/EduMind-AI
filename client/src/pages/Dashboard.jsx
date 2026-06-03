@@ -1,31 +1,42 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { videosAPI } from '../utils/api';
-import { Play, Search, Video, Award, Clock, ArrowRight, CheckCircle, Sparkles, Youtube, BookOpen } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { videosAPI } from "../utils/api";
+import {
+  Play,
+  Search,
+  Video,
+  Award,
+  Clock,
+  ArrowRight,
+  CheckCircle,
+  Sparkles,
+  Youtube,
+  BookOpen,
+} from "lucide-react";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [recentVideos, setRecentVideos] = useState([]);
   const [stats, setStats] = useState({
     totalVideos: 0,
     masteredCards: 0,
     completedNotes: 0,
-    avgQuizScore: 0
+    avgQuizScore: 0,
   });
 
   // Processing steps animation state
   const [processingStep, setProcessingStep] = useState(0);
   const steps = [
-    'Verifying YouTube URL and resolving video metadata...',
-    'Extracting transcript segments and captions...',
-    'Synthesizing video content with Gemini AI...',
-    'Generating structured study notes & summary...',
-    'Building interactive flashcards & quiz challenges...'
+    "Verifying YouTube URL and resolving video metadata...",
+    "Extracting transcript segments and captions...",
+    "Synthesizing video content with Gemini AI...",
+    "Generating structured study notes & summary...",
+    "Building interactive flashcards & quiz challenges...",
   ];
 
   // Simulated step increment during processing
@@ -64,10 +75,14 @@ const Dashboard = () => {
         library.forEach((item) => {
           masteredCards += item.masteredFlashcards?.length || 0;
           if (item.notesCompleted) completedNotes++;
-          
+
           if (item.quizAttempts && item.quizAttempts.length > 0) {
             // Take the best attempt
-            const bestAttempt = Math.max(...item.quizAttempts.map(a => (a.score / a.totalQuestions) * 100));
+            const bestAttempt = Math.max(
+              ...item.quizAttempts.map(
+                (a) => (a.score / a.totalQuestions) * 100,
+              ),
+            );
             totalQuizScore += bestAttempt;
             totalQuizAttempts++;
           }
@@ -77,10 +92,13 @@ const Dashboard = () => {
           totalVideos,
           masteredCards,
           completedNotes,
-          avgQuizScore: totalQuizAttempts > 0 ? Math.round(totalQuizScore / totalQuizAttempts) : 0
+          avgQuizScore:
+            totalQuizAttempts > 0
+              ? Math.round(totalQuizScore / totalQuizAttempts)
+              : 0,
         });
       } catch (err) {
-        console.error('Error fetching dashboard details:', err);
+        console.error("Error fetching dashboard details:", err);
       }
     };
 
@@ -91,7 +109,7 @@ const Dashboard = () => {
     e.preventDefault();
     if (!url) return;
 
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
@@ -102,7 +120,10 @@ const Dashboard = () => {
       }
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Failed to process video. Please check the URL and try again.');
+      setError(
+        err.message ||
+          "Failed to process video. Please check the URL and try again.",
+      );
       setLoading(false);
     }
   };
@@ -117,9 +138,14 @@ const Dashboard = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
             <h1 className="font-display font-bold text-3xl md:text-4xl text-zinc-100 flex items-center gap-2">
-              Welcome back, <span className="text-gradient-primary">{user?.name}</span> <Sparkles className="w-6 h-6 text-brand-pink animate-pulse" />
+              Welcome back,{" "}
+              <span className="text-gradient-primary">{user?.name}</span>{" "}
+              <Sparkles className="w-6 h-6 text-brand-pink animate-pulse" />
             </h1>
-            <p className="text-zinc-400 mt-1.5 text-base">Paste any YouTube URL below to turn it into an interactive study dashboard.</p>
+            <p className="text-zinc-400 mt-1.5 text-base">
+              Paste any YouTube URL below to turn it into an interactive study
+              dashboard.
+            </p>
           </div>
           <div className="text-zinc-500 text-xs md:text-sm bg-zinc-900/40 border border-white/5 py-2 px-4 rounded-xl flex items-center gap-2">
             <Clock className="w-4 h-4 text-brand-indigo" />
@@ -134,8 +160,12 @@ const Dashboard = () => {
               <Video className="w-6 h-6 text-indigo-400" />
             </div>
             <div>
-              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">Saved Videos</p>
-              <h3 className="text-2xl font-display font-bold mt-0.5">{stats.totalVideos}</h3>
+              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">
+                Saved Videos
+              </p>
+              <h3 className="text-2xl font-display font-bold mt-0.5">
+                {stats.totalVideos}
+              </h3>
             </div>
           </div>
 
@@ -144,8 +174,12 @@ const Dashboard = () => {
               <Award className="w-6 h-6 text-brand-pink" />
             </div>
             <div>
-              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">Mastered Cards</p>
-              <h3 className="text-2xl font-display font-bold mt-0.5">{stats.masteredCards}</h3>
+              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">
+                Mastered Cards
+              </p>
+              <h3 className="text-2xl font-display font-bold mt-0.5">
+                {stats.masteredCards}
+              </h3>
             </div>
           </div>
 
@@ -154,8 +188,12 @@ const Dashboard = () => {
               <BookOpen className="w-6 h-6 text-brand-violet" />
             </div>
             <div>
-              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">Finished Notes</p>
-              <h3 className="text-2xl font-display font-bold mt-0.5">{stats.completedNotes}</h3>
+              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">
+                Finished Notes
+              </p>
+              <h3 className="text-2xl font-display font-bold mt-0.5">
+                {stats.completedNotes}
+              </h3>
             </div>
           </div>
 
@@ -164,8 +202,12 @@ const Dashboard = () => {
               <Award className="w-6 h-6 text-brand-cyan" />
             </div>
             <div>
-              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">Avg Quiz Score</p>
-              <h3 className="text-2xl font-display font-bold mt-0.5">{stats.avgQuizScore}%</h3>
+              <p className="text-xs text-zinc-500 uppercase font-bold tracking-wider">
+                Avg Quiz Score
+              </p>
+              <h3 className="text-2xl font-display font-bold mt-0.5">
+                {stats.avgQuizScore}%
+              </h3>
             </div>
           </div>
         </div>
@@ -184,7 +226,9 @@ const Dashboard = () => {
                 Process Educational YouTube Video
               </h2>
               <p className="text-zinc-400 mb-8 text-sm md:text-base">
-                Paste the URL of any lecture, coding guide, or documentary. We will pull the transcript and compile structured study notes, flashcards, and quizzes automatically.
+                Paste the URL of any lecture, coding guide, or documentary. We
+                will pull the transcript and compile structured study notes,
+                flashcards, and quizzes automatically.
               </p>
 
               {error && (
@@ -193,7 +237,10 @@ const Dashboard = () => {
                 </div>
               )}
 
-              <form onSubmit={handleProcess} className="flex flex-col sm:flex-row gap-3">
+              <form
+                onSubmit={handleProcess}
+                className="flex flex-col sm:flex-row gap-3"
+              >
                 <input
                   type="url"
                   required
@@ -219,8 +266,13 @@ const Dashboard = () => {
                   <div className="w-20 h-20 rounded-full border-4 border-zinc-800 border-t-brand-indigo border-r-brand-pink animate-spin"></div>
                   <Sparkles className="w-8 h-8 text-brand-pink absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow" />
                 </div>
-                <h3 className="font-display font-bold text-2xl text-white">Generating Study Hub</h3>
-                <p className="text-zinc-500 text-sm mt-1">This typically takes 10 to 15 seconds. Please don't close the window.</p>
+                <h3 className="font-display font-bold text-2xl text-white">
+                  Generating Study Hub
+                </h3>
+                <p className="text-zinc-500 text-sm mt-1">
+                  This typically takes 10 to 15 seconds. Please don't close the
+                  window.
+                </p>
               </div>
 
               {/* Progress Steps List */}
@@ -233,10 +285,10 @@ const Dashboard = () => {
                       key={idx}
                       className={`flex items-center gap-4 transition-all duration-500 ${
                         isCompleted
-                          ? 'text-zinc-400'
+                          ? "text-zinc-400"
                           : isActive
-                          ? 'text-brand-indigo font-medium scale-[1.01]'
-                          : 'text-zinc-600'
+                            ? "text-brand-indigo font-medium scale-[1.01]"
+                            : "text-zinc-600"
                       }`}
                     >
                       {isCompleted ? (
@@ -302,7 +354,9 @@ const Dashboard = () => {
                         {item.video.channelTitle}
                       </span>
                       <h4 className="font-display font-semibold text-white text-base leading-snug line-clamp-2 mb-4 hover:text-indigo-300 transition-colors">
-                        <Link to={`/video/${item.video._id || item.video.videoId}`}>
+                        <Link
+                          to={`/video/${item.video._id || item.video.videoId}`}
+                        >
                           {item.video.title}
                         </Link>
                       </h4>
@@ -326,9 +380,12 @@ const Dashboard = () => {
           ) : (
             <div className="glass-panel p-10 rounded-2xl text-center border border-dashed border-white/10">
               <Video className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
-              <h4 className="font-semibold text-zinc-300 text-lg">No videos processed yet</h4>
+              <h4 className="font-semibold text-zinc-300 text-lg">
+                No videos processed yet
+              </h4>
               <p className="text-zinc-500 text-sm max-w-md mx-auto mt-1 mb-4">
-                Paste a YouTube URL above and click 'Generate Study Hub' to create your first grounded learning environment.
+                Paste a YouTube URL above and click 'Generate Study Hub' to
+                create your first grounded learning environment.
               </p>
             </div>
           )}

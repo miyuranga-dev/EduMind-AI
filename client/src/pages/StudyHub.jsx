@@ -1,13 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { videosAPI } from '../utils/api';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { 
-  ArrowLeft, Brain, Video, FileText, Bookmark, 
-  HelpCircle, MessageSquare, Send, Sparkles, 
-  Check, CheckSquare, RefreshCw, ChevronLeft, ChevronRight, Play
-} from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { useParams, Link } from "react-router-dom";
+import { videosAPI } from "../utils/api";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import {
+  ArrowLeft,
+  Brain,
+  Video,
+  FileText,
+  Bookmark,
+  HelpCircle,
+  MessageSquare,
+  Send,
+  Sparkles,
+  Check,
+  CheckSquare,
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
+  Play,
+} from "lucide-react";
 
 const StudyHub = () => {
   const { id } = useParams();
@@ -21,16 +33,16 @@ const StudyHub = () => {
     masteredFlashcards: [],
     quizAttempts: [],
     notesCompleted: false,
-    chatHistory: []
+    chatHistory: [],
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // UI state variables
-  const [activeTab, setActiveTab] = useState('chat'); // 'chat' | 'notes' | 'flashcards' | 'quiz'
-  
+  const [activeTab, setActiveTab] = useState("chat"); // 'chat' | 'notes' | 'flashcards' | 'quiz'
+
   // Chat States
-  const [chatMessage, setChatMessage] = useState('');
+  const [chatMessage, setChatMessage] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
 
@@ -58,7 +70,7 @@ const StudyHub = () => {
         }
       } catch (err) {
         console.error(err);
-        setError('Failed to load this study hub workspace.');
+        setError("Failed to load this study hub workspace.");
       } finally {
         setLoading(false);
       }
@@ -69,27 +81,27 @@ const StudyHub = () => {
 
   // Scroll chat to bottom on updates
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, chatLoading]);
 
   // Keyboard shortcut listener for Flashcards
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (activeTab !== 'flashcards') return;
-      if (e.code === 'Space') {
+      if (activeTab !== "flashcards") return;
+      if (e.code === "Space") {
         e.preventDefault();
-        setIsFlipped(prev => !prev);
-      } else if (e.code === 'ArrowRight') {
+        setIsFlipped((prev) => !prev);
+      } else if (e.code === "ArrowRight") {
         e.preventDefault();
         handleNextCard();
-      } else if (e.code === 'ArrowLeft') {
+      } else if (e.code === "ArrowLeft") {
         e.preventDefault();
         handlePrevCard();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeTab, currentCardIdx, studyMaterial]);
 
   // Seek YouTube video player to specific seconds
@@ -97,11 +109,11 @@ const StudyHub = () => {
     if (iframeRef.current) {
       iframeRef.current.contentWindow.postMessage(
         JSON.stringify({
-          event: 'command',
-          func: 'seekTo',
+          event: "command",
+          func: "seekTo",
           args: [seconds, true],
         }),
-        '*'
+        "*",
       );
     }
   };
@@ -114,18 +126,34 @@ const StudyHub = () => {
     if (!chatMessage.trim() || chatLoading) return;
 
     const userText = chatMessage.trim();
-    setChatMessage('');
+    setChatMessage("");
     setChatLoading(true);
 
     // Optimistically update UI chat messages
-    setChatHistory(prev => [...prev, { role: 'user', content: userText }]);
+    setChatHistory((prev) => [...prev, { role: "user", content: userText }]);
 
     try {
-      const response = await videosAPI.chat(video._id || video.videoId, userText);
-      setChatHistory(response.chatHistory || [...chatHistory, { role: 'user', content: userText }, { role: 'model', content: response.reply }]);
+      const response = await videosAPI.chat(
+        video._id || video.videoId,
+        userText,
+      );
+      setChatHistory(
+        response.chatHistory || [
+          ...chatHistory,
+          { role: "user", content: userText },
+          { role: "model", content: response.reply },
+        ],
+      );
     } catch (err) {
       console.error(err);
-      setChatHistory(prev => [...prev, { role: 'model', content: '⚠️ Sorry, I could not answer that. Please check your connection and verify the server is running.' }]);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          role: "model",
+          content:
+            "⚠️ Sorry, I could not answer that. Please check your connection and verify the server is running.",
+        },
+      ]);
     } finally {
       setChatLoading(false);
     }
@@ -137,13 +165,16 @@ const StudyHub = () => {
   const handleToggleNotes = async () => {
     const newStatus = !userProgress.notesCompleted;
     try {
-      const response = await videosAPI.updateProgress(video._id || video.videoId, {
-        type: 'notes',
-        notesCompleted: newStatus
-      });
-      setUserProgress(prev => ({
+      const response = await videosAPI.updateProgress(
+        video._id || video.videoId,
+        {
+          type: "notes",
+          notesCompleted: newStatus,
+        },
+      );
+      setUserProgress((prev) => ({
         ...prev,
-        notesCompleted: response.userProgress.notesCompleted
+        notesCompleted: response.userProgress.notesCompleted,
       }));
     } catch (err) {
       console.error(err);
@@ -157,7 +188,7 @@ const StudyHub = () => {
     if (!studyMaterial?.flashcards) return;
     setIsFlipped(false);
     setTimeout(() => {
-      setCurrentCardIdx(prev => (prev + 1) % studyMaterial.flashcards.length);
+      setCurrentCardIdx((prev) => (prev + 1) % studyMaterial.flashcards.length);
     }, 150);
   };
 
@@ -165,19 +196,26 @@ const StudyHub = () => {
     if (!studyMaterial?.flashcards) return;
     setIsFlipped(false);
     setTimeout(() => {
-      setCurrentCardIdx(prev => (prev - 1 + studyMaterial.flashcards.length) % studyMaterial.flashcards.length);
+      setCurrentCardIdx(
+        (prev) =>
+          (prev - 1 + studyMaterial.flashcards.length) %
+          studyMaterial.flashcards.length,
+      );
     }, 150);
   };
 
   const handleToggleMastery = async (cardId) => {
     try {
-      const response = await videosAPI.updateProgress(video._id || video.videoId, {
-        type: 'flashcard',
-        flashcardId: cardId
-      });
-      setUserProgress(prev => ({
+      const response = await videosAPI.updateProgress(
+        video._id || video.videoId,
+        {
+          type: "flashcard",
+          flashcardId: cardId,
+        },
+      );
+      setUserProgress((prev) => ({
         ...prev,
-        masteredFlashcards: response.userProgress.masteredFlashcards
+        masteredFlashcards: response.userProgress.masteredFlashcards,
       }));
     } catch (err) {
       console.error(err);
@@ -197,31 +235,43 @@ const StudyHub = () => {
     setQuizSubmitted(true);
 
     const quizList = studyMaterial.quizzes;
-    const isCorrect = selectedOptionIdx === quizList[currentQuizIdx].correctAnswerIndex;
+    const isCorrect =
+      selectedOptionIdx === quizList[currentQuizIdx].correctAnswerIndex;
     if (isCorrect) {
-      setQuizScore(prev => prev + 1);
+      setQuizScore((prev) => prev + 1);
     }
   };
 
   const handleQuizNext = async () => {
     const quizList = studyMaterial.quizzes;
-    
+
     if (currentQuizIdx < quizList.length - 1) {
-      setCurrentQuizIdx(prev => prev + 1);
+      setCurrentQuizIdx((prev) => prev + 1);
       setSelectedOptionIdx(null);
       setQuizSubmitted(false);
     } else {
       // Completed last quiz question. Log to progress API.
       setQuizCompleted(true);
       try {
-        const response = await videosAPI.updateProgress(video._id || video.videoId, {
-          type: 'quiz',
-          score: quizScore + (selectedOptionIdx === quizList[currentQuizIdx].correctAnswerIndex && quizSubmitted ? 0 : (selectedOptionIdx === quizList[currentQuizIdx].correctAnswerIndex ? 1 : 0)),
-          totalQuestions: quizList.length
-        });
-        setUserProgress(prev => ({
+        const response = await videosAPI.updateProgress(
+          video._id || video.videoId,
+          {
+            type: "quiz",
+            score:
+              quizScore +
+              (selectedOptionIdx ===
+                quizList[currentQuizIdx].correctAnswerIndex && quizSubmitted
+                ? 0
+                : selectedOptionIdx ===
+                    quizList[currentQuizIdx].correctAnswerIndex
+                  ? 1
+                  : 0),
+            totalQuestions: quizList.length,
+          },
+        );
+        setUserProgress((prev) => ({
           ...prev,
-          quizAttempts: response.userProgress.quizAttempts
+          quizAttempts: response.userProgress.quizAttempts,
         }));
       } catch (err) {
         console.error(err);
@@ -241,7 +291,7 @@ const StudyHub = () => {
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Loader screen
@@ -251,7 +301,9 @@ const StudyHub = () => {
         <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-tr from-brand-indigo via-brand-violet to-brand-pink p-[3px]">
           <div className="w-full h-full bg-bg-darker rounded-full"></div>
         </div>
-        <p className="text-zinc-400 font-medium">Opening learning workspace...</p>
+        <p className="text-zinc-400 font-medium">
+          Opening learning workspace...
+        </p>
       </div>
     );
   }
@@ -262,8 +314,12 @@ const StudyHub = () => {
       <div className="min-h-screen bg-bg-darker flex items-center justify-center p-6">
         <div className="w-full max-w-md glass-panel p-8 rounded-3xl text-center border border-white/10">
           <HelpCircle className="w-12 h-12 text-brand-pink mx-auto mb-4" />
-          <h3 className="font-display font-bold text-2xl text-white">Workspace Offline</h3>
-          <p className="text-zinc-500 text-sm mt-2 mb-6">{error || 'Could not load video materials.'}</p>
+          <h3 className="font-display font-bold text-2xl text-white">
+            Workspace Offline
+          </h3>
+          <p className="text-zinc-500 text-sm mt-2 mb-6">
+            {error || "Could not load video materials."}
+          </p>
           <Link
             to="/"
             className="inline-block bg-gradient-to-r from-brand-indigo to-brand-violet text-white font-bold py-2.5 px-6 rounded-xl hover:opacity-95 shadow-md cursor-pointer"
@@ -289,7 +345,7 @@ const StudyHub = () => {
           </Link>
           <div>
             <span className="text-[10px] text-brand-pink uppercase font-extrabold tracking-wider block mb-0.5">
-              {video.channelTitle || 'YouTube Creator'}
+              {video.channelTitle || "YouTube Creator"}
             </span>
             <h2 className="font-display font-bold text-lg md:text-xl text-zinc-100 line-clamp-1">
               {video.title}
@@ -324,9 +380,12 @@ const StudyHub = () => {
           <div className="flex-1 flex flex-col overflow-hidden bg-bg-dark/40 min-h-[300px]">
             <div className="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-zinc-950/20">
               <h3 className="font-display font-semibold text-sm text-zinc-300 flex items-center gap-2">
-                <Video className="w-4 h-4 text-brand-indigo" /> Clickable Transcript
+                <Video className="w-4 h-4 text-brand-indigo" /> Clickable
+                Transcript
               </h3>
-              <span className="text-[10px] text-zinc-500 font-medium">Click lines to seek video</span>
+              <span className="text-[10px] text-zinc-500 font-medium">
+                Click lines to seek video
+              </span>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
@@ -359,10 +418,10 @@ const StudyHub = () => {
           {/* Tab Navigation */}
           <div className="flex border-b border-white/5 bg-zinc-950/30 overflow-x-auto shrink-0 scrollbar-none">
             {[
-              { id: 'chat', label: 'AI Chat', icon: MessageSquare },
-              { id: 'notes', label: 'Structured Notes', icon: FileText },
-              { id: 'flashcards', label: 'Flashcards', icon: Bookmark },
-              { id: 'quiz', label: 'Interactive Quiz', icon: HelpCircle },
+              { id: "chat", label: "AI Chat", icon: MessageSquare },
+              { id: "notes", label: "Structured Notes", icon: FileText },
+              { id: "flashcards", label: "Flashcards", icon: Bookmark },
+              { id: "quiz", label: "Interactive Quiz", icon: HelpCircle },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -371,8 +430,8 @@ const StudyHub = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-6 py-4 border-b-2 font-display text-sm font-semibold whitespace-nowrap transition-all focus:outline-none cursor-pointer ${
                     activeTab === tab.id
-                      ? 'border-brand-indigo text-indigo-400 bg-brand-indigo/5'
-                      : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/2'
+                      ? "border-brand-indigo text-indigo-400 bg-brand-indigo/5"
+                      : "border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/2"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -384,14 +443,15 @@ const StudyHub = () => {
 
           {/* Tab Content Panel */}
           <div className="flex-1 overflow-y-auto p-6">
-            
             {/* 1. AI CHAT TAB */}
-            {activeTab === 'chat' && (
+            {activeTab === "chat" && (
               <div className="h-full flex flex-col bg-bg-dark/40 border border-white/5 rounded-2xl overflow-hidden min-h-[450px]">
                 {/* Chat header grounding description */}
                 <div className="bg-zinc-950/40 border-b border-white/5 py-3 px-5 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-brand-pink" />
-                  <span className="text-[11px] text-zinc-400 font-medium">Answers are grounded strictly in the transcript above.</span>
+                  <span className="text-[11px] text-zinc-400 font-medium">
+                    Answers are grounded strictly in the transcript above.
+                  </span>
                 </div>
 
                 {/* Messages Hub */}
@@ -399,22 +459,26 @@ const StudyHub = () => {
                   {chatHistory.length === 0 ? (
                     <div className="h-full flex items-center justify-center flex-col text-center max-w-sm mx-auto">
                       <Brain className="w-12 h-12 text-zinc-700 animate-float mb-4" />
-                      <h4 className="font-semibold text-zinc-300">Ask Anything About the Video</h4>
+                      <h4 className="font-semibold text-zinc-300">
+                        Ask Anything About the Video
+                      </h4>
                       <p className="text-zinc-500 text-xs mt-1">
-                        I am trained specifically on this video's transcript. Ask me to explain concepts, list steps, or clarify points from the audio.
+                        I am trained specifically on this video's transcript.
+                        Ask me to explain concepts, list steps, or clarify
+                        points from the audio.
                       </p>
                     </div>
                   ) : (
                     chatHistory.map((msg, idx) => (
                       <div
                         key={idx}
-                        className={`flex ${msg.role === 'model' ? 'justify-start' : 'justify-end'}`}
+                        className={`flex ${msg.role === "model" ? "justify-start" : "justify-end"}`}
                       >
                         <div
                           className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed border ${
-                            msg.role === 'model'
-                              ? 'bg-zinc-900/60 border-white/5 text-zinc-200'
-                              : 'bg-brand-indigo/15 border-brand-indigo/25 text-white'
+                            msg.role === "model"
+                              ? "bg-zinc-900/60 border-white/5 text-zinc-200"
+                              : "bg-brand-indigo/15 border-brand-indigo/25 text-white"
                           }`}
                         >
                           {/* Parse message content using standard formatting */}
@@ -430,9 +494,18 @@ const StudyHub = () => {
                   {chatLoading && (
                     <div className="flex justify-start">
                       <div className="bg-zinc-900/60 border border-white/5 px-4 py-3.5 rounded-2xl max-w-fit flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce"
+                          style={{ animationDelay: "0ms" }}
+                        ></span>
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce"
+                          style={{ animationDelay: "150ms" }}
+                        ></span>
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce"
+                          style={{ animationDelay: "300ms" }}
+                        ></span>
                       </div>
                     </div>
                   )}
@@ -440,7 +513,10 @@ const StudyHub = () => {
                 </div>
 
                 {/* Input Prompt Box */}
-                <form onSubmit={handleSendChat} className="p-4 border-t border-white/5 bg-zinc-950/20 flex gap-2">
+                <form
+                  onSubmit={handleSendChat}
+                  className="p-4 border-t border-white/5 bg-zinc-950/20 flex gap-2"
+                >
                   <input
                     type="text"
                     required
@@ -461,20 +537,24 @@ const StudyHub = () => {
             )}
 
             {/* 2. STRUCTURED NOTES TAB */}
-            {activeTab === 'notes' && (
+            {activeTab === "notes" && (
               <div className="space-y-6">
                 {/* Notes Read Complete Toggle */}
                 <div className="flex justify-between items-center bg-zinc-900/30 p-4 rounded-xl border border-white/5 mb-6">
                   <div>
-                    <h4 className="font-semibold text-sm text-white">Toggle Completion</h4>
-                    <p className="text-xs text-zinc-500">Check this box when you finish reviewing the notes</p>
+                    <h4 className="font-semibold text-sm text-white">
+                      Toggle Completion
+                    </h4>
+                    <p className="text-xs text-zinc-500">
+                      Check this box when you finish reviewing the notes
+                    </p>
                   </div>
                   <button
                     onClick={handleToggleNotes}
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                       userProgress.notesCompleted
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                        : 'bg-zinc-900/80 hover:bg-zinc-900 text-zinc-400 border-white/5'
+                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        : "bg-zinc-900/80 hover:bg-zinc-900 text-zinc-400 border-white/5"
                     }`}
                   >
                     {userProgress.notesCompleted ? (
@@ -483,7 +563,8 @@ const StudyHub = () => {
                       </>
                     ) : (
                       <>
-                        <div className="w-4 h-4 border border-zinc-500 rounded"></div> Mark as Read
+                        <div className="w-4 h-4 border border-zinc-500 rounded"></div>{" "}
+                        Mark as Read
                       </>
                     )}
                   </button>
@@ -502,19 +583,23 @@ const StudyHub = () => {
             )}
 
             {/* 3. FLASHCARDS TAB */}
-            {activeTab === 'flashcards' && (
+            {activeTab === "flashcards" && (
               <div className="space-y-8 max-w-xl mx-auto py-4">
                 {/* Info Tip */}
                 <div className="text-center text-xs text-zinc-500 flex items-center justify-center gap-2">
-                  <span>💡 Press [Space] to flip | [← / →] arrows for next/prev cards</span>
+                  <span>
+                    💡 Press [Space] to flip | [← / →] arrows for next/prev
+                    cards
+                  </span>
                 </div>
 
-                {studyMaterial.flashcards && studyMaterial.flashcards.length > 0 ? (
+                {studyMaterial.flashcards &&
+                studyMaterial.flashcards.length > 0 ? (
                   <>
                     {/* Card container */}
                     <div
                       onClick={() => setIsFlipped(!isFlipped)}
-                      className={`flashcard-container select-none ${isFlipped ? 'is-flipped' : ''}`}
+                      className={`flashcard-container select-none ${isFlipped ? "is-flipped" : ""}`}
                     >
                       <div className="flashcard-inner">
                         {/* Front Side */}
@@ -525,7 +610,9 @@ const StudyHub = () => {
                           <h3 className="font-display font-bold text-lg md:text-xl text-center text-white leading-snug">
                             {studyMaterial.flashcards[currentCardIdx].question}
                           </h3>
-                          <span className="text-zinc-500 text-[11px] mt-8 block">Click to reveal answer</span>
+                          <span className="text-zinc-500 text-[11px] mt-8 block">
+                            Click to reveal answer
+                          </span>
                         </div>
 
                         {/* Back Side */}
@@ -536,7 +623,9 @@ const StudyHub = () => {
                           <p className="text-zinc-300 text-sm md:text-base text-center leading-relaxed font-medium">
                             {studyMaterial.flashcards[currentCardIdx].answer}
                           </p>
-                          <span className="text-zinc-500 text-[11px] mt-8 block">Click to show question</span>
+                          <span className="text-zinc-500 text-[11px] mt-8 block">
+                            Click to show question
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -548,18 +637,27 @@ const StudyHub = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleToggleMastery(studyMaterial.flashcards[currentCardIdx]._id || currentCardIdx);
+                            handleToggleMastery(
+                              studyMaterial.flashcards[currentCardIdx]._id ||
+                                currentCardIdx,
+                            );
                           }}
                           className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
-                            userProgress.masteredFlashcards?.includes(studyMaterial.flashcards[currentCardIdx]._id || currentCardIdx)
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                              : 'bg-zinc-900/80 hover:bg-zinc-900 text-zinc-400 border-white/5'
+                            userProgress.masteredFlashcards?.includes(
+                              studyMaterial.flashcards[currentCardIdx]._id ||
+                                currentCardIdx,
+                            )
+                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              : "bg-zinc-900/80 hover:bg-zinc-900 text-zinc-400 border-white/5"
                           }`}
                         >
                           <Check className="w-3.5 h-3.5" />
-                          {userProgress.masteredFlashcards?.includes(studyMaterial.flashcards[currentCardIdx]._id || currentCardIdx)
-                            ? 'Mastered'
-                            : 'Mark as Mastered'}
+                          {userProgress.masteredFlashcards?.includes(
+                            studyMaterial.flashcards[currentCardIdx]._id ||
+                              currentCardIdx,
+                          )
+                            ? "Mastered"
+                            : "Mark as Mastered"}
                         </button>
                       </div>
 
@@ -576,7 +674,8 @@ const StudyHub = () => {
                         </button>
 
                         <span className="text-sm font-semibold text-zinc-400">
-                          {currentCardIdx + 1} / {studyMaterial.flashcards.length}
+                          {currentCardIdx + 1} /{" "}
+                          {studyMaterial.flashcards.length}
                         </span>
 
                         <button
@@ -600,14 +699,17 @@ const StudyHub = () => {
             )}
 
             {/* 4. INTERACTIVE QUIZ TAB */}
-            {activeTab === 'quiz' && (
+            {activeTab === "quiz" && (
               <div className="max-w-xl mx-auto py-2">
                 {studyMaterial.quizzes && studyMaterial.quizzes.length > 0 ? (
                   !quizCompleted ? (
                     <div className="space-y-6">
                       {/* Score indicator */}
                       <div className="flex justify-between items-center text-xs text-zinc-500 bg-zinc-900/20 px-4 py-3 rounded-xl border border-white/5">
-                        <span>Question {currentQuizIdx + 1} of {studyMaterial.quizzes.length}</span>
+                        <span>
+                          Question {currentQuizIdx + 1} of{" "}
+                          {studyMaterial.quizzes.length}
+                        </span>
                         <span>Score: {quizScore}</span>
                       </div>
 
@@ -620,38 +722,52 @@ const StudyHub = () => {
 
                       {/* Options */}
                       <div className="space-y-3">
-                        {studyMaterial.quizzes[currentQuizIdx].options.map((opt, oIdx) => {
-                          const isSelected = selectedOptionIdx === oIdx;
-                          const isCorrectOption = oIdx === studyMaterial.quizzes[currentQuizIdx].correctAnswerIndex;
-                          
-                          let buttonStyle = 'bg-zinc-900/40 hover:bg-zinc-900 border-white/5 text-zinc-300';
-                          
-                          if (quizSubmitted) {
-                            if (isCorrectOption) {
-                              buttonStyle = 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
-                            } else if (isSelected) {
-                              buttonStyle = 'bg-brand-pink/15 border-brand-pink/30 text-brand-pink';
-                            } else {
-                              buttonStyle = 'bg-zinc-950/20 border-white/5 text-zinc-600 opacity-60';
-                            }
-                          } else if (isSelected) {
-                            buttonStyle = 'bg-brand-indigo/15 border-brand-indigo/40 text-indigo-400 font-semibold';
-                          }
+                        {studyMaterial.quizzes[currentQuizIdx].options.map(
+                          (opt, oIdx) => {
+                            const isSelected = selectedOptionIdx === oIdx;
+                            const isCorrectOption =
+                              oIdx ===
+                              studyMaterial.quizzes[currentQuizIdx]
+                                .correctAnswerIndex;
 
-                          return (
-                            <button
-                              key={oIdx}
-                              disabled={quizSubmitted}
-                              onClick={() => handleOptionSelect(oIdx)}
-                              className={`w-full text-left px-5 py-4 rounded-xl border text-sm font-medium transition-all focus:outline-none flex justify-between items-center ${buttonStyle} ${
-                                !quizSubmitted ? 'hover:scale-[1.01] hover:border-brand-indigo/25 cursor-pointer' : ''
-                              }`}
-                            >
-                              <span>{opt}</span>
-                              {quizSubmitted && isCorrectOption && <Check className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />}
-                            </button>
-                          );
-                        })}
+                            let buttonStyle =
+                              "bg-zinc-900/40 hover:bg-zinc-900 border-white/5 text-zinc-300";
+
+                            if (quizSubmitted) {
+                              if (isCorrectOption) {
+                                buttonStyle =
+                                  "bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
+                              } else if (isSelected) {
+                                buttonStyle =
+                                  "bg-brand-pink/15 border-brand-pink/30 text-brand-pink";
+                              } else {
+                                buttonStyle =
+                                  "bg-zinc-950/20 border-white/5 text-zinc-600 opacity-60";
+                              }
+                            } else if (isSelected) {
+                              buttonStyle =
+                                "bg-brand-indigo/15 border-brand-indigo/40 text-indigo-400 font-semibold";
+                            }
+
+                            return (
+                              <button
+                                key={oIdx}
+                                disabled={quizSubmitted}
+                                onClick={() => handleOptionSelect(oIdx)}
+                                className={`w-full text-left px-5 py-4 rounded-xl border text-sm font-medium transition-all focus:outline-none flex justify-between items-center ${buttonStyle} ${
+                                  !quizSubmitted
+                                    ? "hover:scale-[1.01] hover:border-brand-indigo/25 cursor-pointer"
+                                    : ""
+                                }`}
+                              >
+                                <span>{opt}</span>
+                                {quizSubmitted && isCorrectOption && (
+                                  <Check className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
+                                )}
+                              </button>
+                            );
+                          },
+                        )}
                       </div>
 
                       {/* Explanation Reveal */}
@@ -681,7 +797,9 @@ const StudyHub = () => {
                             onClick={handleQuizNext}
                             className="bg-gradient-to-r from-brand-indigo to-brand-violet text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
                           >
-                            {currentQuizIdx < studyMaterial.quizzes.length - 1 ? 'Next Question' : 'Finish Quiz'}
+                            {currentQuizIdx < studyMaterial.quizzes.length - 1
+                              ? "Next Question"
+                              : "Finish Quiz"}
                             <ChevronRight className="w-4 h-4" />
                           </button>
                         )}
@@ -693,22 +811,33 @@ const StudyHub = () => {
                       <div className="w-20 h-20 rounded-full bg-brand-indigo/10 border-2 border-brand-indigo flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/10">
                         <Award className="w-8 h-8 text-indigo-400" />
                       </div>
-                      
+
                       <div>
-                        <h3 className="font-display font-bold text-2xl text-white">Quiz Finished</h3>
-                        <p className="text-zinc-500 text-xs mt-1">Grounding knowledge tested successfully</p>
+                        <h3 className="font-display font-bold text-2xl text-white">
+                          Quiz Finished
+                        </h3>
+                        <p className="text-zinc-500 text-xs mt-1">
+                          Grounding knowledge tested successfully
+                        </p>
                       </div>
 
                       <div className="bg-zinc-900/40 p-4 rounded-2xl border border-white/5 flex justify-around">
                         <div>
-                          <span className="text-xs text-zinc-500 block uppercase tracking-wider font-bold">Accuracy</span>
+                          <span className="text-xs text-zinc-500 block uppercase tracking-wider font-bold">
+                            Accuracy
+                          </span>
                           <span className="text-2xl font-bold text-white">
-                            {Math.round((quizScore / studyMaterial.quizzes.length) * 100)}%
+                            {Math.round(
+                              (quizScore / studyMaterial.quizzes.length) * 100,
+                            )}
+                            %
                           </span>
                         </div>
                         <div className="w-[1px] bg-zinc-800"></div>
                         <div>
-                          <span className="text-xs text-zinc-500 block uppercase tracking-wider font-bold">Correct</span>
+                          <span className="text-xs text-zinc-500 block uppercase tracking-wider font-bold">
+                            Correct
+                          </span>
                           <span className="text-2xl font-bold text-white">
                             {quizScore} / {studyMaterial.quizzes.length}
                           </span>
@@ -730,7 +859,6 @@ const StudyHub = () => {
                 )}
               </div>
             )}
-
           </div>
         </div>
       </div>

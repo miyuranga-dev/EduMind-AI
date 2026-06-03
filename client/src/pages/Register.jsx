@@ -1,41 +1,41 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { Brain, User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { Brain, User, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [localError, setLocalError] = useState('');
+  const [localError, setLocalError] = useState("");
   const { register, error, loading, clearError } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLocalError('');
+    setLocalError("");
     clearError();
 
     if (!name || !email || !password || !confirmPassword) {
-      setLocalError('Please fill in all fields.');
+      setLocalError("Please fill in all fields.");
       return;
     }
 
     if (password.length < 6) {
-      setLocalError('Password must be at least 6 characters long.');
+      setLocalError("Password must be at least 6 characters long.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setLocalError('Passwords do not match.');
+      setLocalError("Passwords do not match.");
       return;
     }
 
     try {
       await register(name, email, password);
-      navigate('/');
+      navigate("/");
     } catch (err) {
       // Error handled by AuthContext
     }
@@ -53,8 +53,12 @@ const Register = () => {
           <div className="bg-gradient-to-tr from-brand-indigo to-brand-violet p-3 rounded-2xl shadow-xl shadow-brand-indigo/20 mb-3 animate-float">
             <Brain className="w-8 h-8 text-white" />
           </div>
-          <h2 className="font-display font-bold text-3xl text-white">Create Account</h2>
-          <p className="text-zinc-400 text-sm mt-1">Start converting video lessons into study guides.</p>
+          <h2 className="font-display font-bold text-3xl text-white">
+            Create Account
+          </h2>
+          <p className="text-zinc-400 text-sm mt-1">
+            Start converting video lessons into study guides.
+          </p>
         </div>
 
         {/* Errors */}
@@ -109,7 +113,7 @@ const Register = () => {
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -121,7 +125,11 @@ const Register = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors focus:outline-none cursor-pointer"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
@@ -134,7 +142,7 @@ const Register = () => {
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -163,7 +171,7 @@ const Register = () => {
 
         {/* Toggle Footer */}
         <div className="mt-6 text-center text-sm text-zinc-400">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link
             to="/login"
             onClick={clearError}

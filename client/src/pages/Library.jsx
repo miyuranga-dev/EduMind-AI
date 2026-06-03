@@ -1,22 +1,30 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { videosAPI } from '../utils/api';
-import { Search, Play, Trash2, Video, Calendar, BookOpen, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { videosAPI } from "../utils/api";
+import {
+  Search,
+  Play,
+  Trash2,
+  Video,
+  Calendar,
+  BookOpen,
+  ChevronRight,
+} from "lucide-react";
 
 const Library = () => {
   const [library, setLibrary] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const fetchLibrary = async (query = '') => {
+  const fetchLibrary = async (query = "") => {
     try {
       setLoading(true);
       const data = await videosAPI.getAll(query);
       setLibrary(data);
     } catch (err) {
       console.error(err);
-      setError('Could not retrieve your library files.');
+      setError("Could not retrieve your library files.");
     } finally {
       setLoading(false);
     }
@@ -34,29 +42,37 @@ const Library = () => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     // Instant search debouncing alternative: fetch when empty
-    if (e.target.value === '') {
-      fetchLibrary('');
+    if (e.target.value === "") {
+      fetchLibrary("");
     }
   };
 
   const handleDelete = async (id, e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!confirm('Are you sure you want to remove this video and its study guides from your library?')) {
+    if (
+      !confirm(
+        "Are you sure you want to remove this video and its study guides from your library?",
+      )
+    ) {
       return;
     }
 
     try {
       await videosAPI.delete(id);
-      setLibrary(prev => prev.filter(item => item.video?._id !== id && item.video?.videoId !== id));
+      setLibrary((prev) =>
+        prev.filter(
+          (item) => item.video?._id !== id && item.video?.videoId !== id,
+        ),
+      );
     } catch (err) {
       console.error(err);
-      alert('Failed to remove video from library');
+      alert("Failed to remove video from library");
     }
   };
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -69,11 +85,16 @@ const Library = () => {
             <h1 className="font-display font-bold text-3xl md:text-4xl text-zinc-100 flex items-center gap-2">
               My Learning Library
             </h1>
-            <p className="text-zinc-400 mt-1 text-sm md:text-base">Revisit and practice knowledge from your saved study hubs.</p>
+            <p className="text-zinc-400 mt-1 text-sm md:text-base">
+              Revisit and practice knowledge from your saved study hubs.
+            </p>
           </div>
 
           {/* Search bar */}
-          <form onSubmit={handleSearchSubmit} className="relative w-full md:w-80 shrink-0">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative w-full md:w-80 shrink-0"
+          >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
             <input
               type="text"
@@ -89,7 +110,9 @@ const Library = () => {
         {loading ? (
           <div className="py-20 flex justify-center flex-col items-center gap-4">
             <div className="w-12 h-12 rounded-full border-4 border-zinc-800 border-t-brand-indigo animate-spin"></div>
-            <p className="text-zinc-500 text-sm">Retrieving your index card index...</p>
+            <p className="text-zinc-500 text-sm">
+              Retrieving your index card index...
+            </p>
           </div>
         ) : error ? (
           <div className="p-6 rounded-2xl bg-brand-pink/10 border border-brand-pink/20 text-brand-pink text-sm text-center">
@@ -126,7 +149,9 @@ const Library = () => {
 
                     {/* Delete overlay */}
                     <button
-                      onClick={(e) => handleDelete(video._id || video.videoId, e)}
+                      onClick={(e) =>
+                        handleDelete(video._id || video.videoId, e)
+                      }
                       className="absolute top-3 right-3 bg-zinc-950/80 hover:bg-brand-pink/20 text-zinc-400 hover:text-brand-pink border border-white/5 p-2 rounded-xl transition-all cursor-pointer opacity-0 group-hover/card:opacity-100"
                       title="Remove from Library"
                     >
@@ -173,7 +198,9 @@ const Library = () => {
         ) : (
           <div className="glass-panel py-20 rounded-3xl text-center border border-dashed border-white/10 max-w-md mx-auto">
             <Video className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
-            <h4 className="font-semibold text-zinc-300 text-xl">No materials found</h4>
+            <h4 className="font-semibold text-zinc-300 text-xl">
+              No materials found
+            </h4>
             <p className="text-zinc-500 text-sm mt-1 mb-6">
               {searchQuery
                 ? `No videos match "${searchQuery}". Try searching other keywords.`

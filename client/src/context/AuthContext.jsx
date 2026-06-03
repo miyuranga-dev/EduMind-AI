@@ -1,5 +1,5 @@
-import { createContext, useState, useEffect, useContext } from 'react';
-import { authAPI } from '../utils/api';
+import { createContext, useState, useEffect, useContext } from "react";
+import { authAPI } from "../utils/api";
 
 const AuthContext = createContext(null);
 
@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const loadUser = async () => {
-      const token = localStorage.getItem('edumind_token');
+      const token = localStorage.getItem("edumind_token");
       if (!token) {
         setLoading(false);
         return;
@@ -20,10 +20,10 @@ export const AuthProvider = ({ children }) => {
         const userData = await authAPI.getMe();
         setUser(userData);
       } catch (err) {
-        console.error('Session validation failed:', err);
+        console.error("Session validation failed:", err);
         // Clear corrupt storage
-        localStorage.removeItem('edumind_token');
-        localStorage.removeItem('edumind_user');
+        localStorage.removeItem("edumind_token");
+        localStorage.removeItem("edumind_user");
       } finally {
         setLoading(false);
       }
@@ -38,11 +38,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const userData = await authAPI.login(email, password);
       setUser(userData);
-      localStorage.setItem('edumind_token', userData.token);
-      localStorage.setItem('edumind_user', JSON.stringify(userData));
+      localStorage.setItem("edumind_token", userData.token);
+      localStorage.setItem("edumind_user", JSON.stringify(userData));
       return userData;
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.message || "Login failed");
       throw err;
     } finally {
       setLoading(false);
@@ -55,11 +55,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const userData = await authAPI.register(name, email, password);
       setUser(userData);
-      localStorage.setItem('edumind_token', userData.token);
-      localStorage.setItem('edumind_user', JSON.stringify(userData));
+      localStorage.setItem("edumind_token", userData.token);
+      localStorage.setItem("edumind_user", JSON.stringify(userData));
       return userData;
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || "Registration failed");
       throw err;
     } finally {
       setLoading(false);
@@ -68,8 +68,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('edumind_token');
-    localStorage.removeItem('edumind_user');
+    localStorage.removeItem("edumind_token");
+    localStorage.removeItem("edumind_user");
   };
 
   const clearError = () => setError(null);
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

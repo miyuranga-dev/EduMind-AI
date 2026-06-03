@@ -1,6 +1,6 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { Brain, LogOut, BookOpen, LayoutDashboard } from 'lucide-react';
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { Brain, LogOut, BookOpen, LayoutDashboard } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   const isActive = (path) => location.pathname === path;
@@ -19,9 +19,9 @@ const Navbar = () => {
   // Get initials for profile badge
   const getInitials = (name) => {
     return name
-      .split(' ')
+      .split(" ")
       .map((n) => n[0])
-      .join('')
+      .join("")
       .slice(0, 2)
       .toUpperCase();
   };
@@ -43,9 +43,9 @@ const Navbar = () => {
         <Link
           to="/"
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-            isActive('/')
-              ? 'bg-brand-indigo/15 text-indigo-400 border border-brand-indigo/20'
-              : 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
+            isActive("/")
+              ? "bg-brand-indigo/15 text-indigo-400 border border-brand-indigo/20"
+              : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
           }`}
         >
           <LayoutDashboard className="w-4 h-4" />
@@ -54,9 +54,9 @@ const Navbar = () => {
         <Link
           to="/library"
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-            isActive('/library')
-              ? 'bg-brand-indigo/15 text-indigo-400 border border-brand-indigo/20'
-              : 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
+            isActive("/library")
+              ? "bg-brand-indigo/15 text-indigo-400 border border-brand-indigo/20"
+              : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -69,7 +69,9 @@ const Navbar = () => {
         {/* User profile / Logout */}
         <div className="flex items-center gap-3">
           <div className="hidden md:flex flex-col text-right">
-            <span className="text-sm font-semibold text-zinc-200">{user.name}</span>
+            <span className="text-sm font-semibold text-zinc-200">
+              {user.name}
+            </span>
             <span className="text-xs text-zinc-500">{user.email}</span>
           </div>
 
