@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { videosAPI } from "../utils/api";
+import Footer from "../components/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -287,13 +288,6 @@ const StudyHub = () => {
     setQuizCompleted(false);
   };
 
-  // Formatting timestamp helper for transcript display
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
-
   // Loader screen
   if (loading) {
     return (
@@ -361,9 +355,9 @@ const StudyHub = () => {
       </div>
 
       {/* Main split work area */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-[calc(100vh-140px)]">
-        {/* Left Side: Video and Transcript */}
-        <div className="lg:col-span-5 flex flex-col border-r border-white/5 h-full overflow-y-auto">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-[calc(100vh-140px)] px-3">
+        {/* Left Side: Video */}
+        <div className="lg:col-span-5 flex flex-col  justify-center border-r border-white/5 h-full overflow-y-auto">
           {/* IFrame Video Player */}
           <div className="aspect-video w-full bg-black relative border-b border-white/5">
             <iframe
@@ -374,42 +368,6 @@ const StudyHub = () => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-          </div>
-
-          {/* Clickable Transcript Box */}
-          <div className="flex-1 flex flex-col overflow-hidden bg-bg-dark/40 min-h-[300px]">
-            <div className="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-zinc-950/20">
-              <h3 className="font-display font-semibold text-sm text-zinc-300 flex items-center gap-2">
-                <Video className="w-4 h-4 text-brand-indigo" /> Clickable
-                Transcript
-              </h3>
-              <span className="text-[10px] text-zinc-500 font-medium">
-                Click lines to seek video
-              </span>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {video.transcript && video.transcript.length > 0 ? (
-                video.transcript.map((seg, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => seekTo(seg.start)}
-                    className="flex gap-3 text-left w-full hover:bg-white/3 p-2.5 rounded-xl group/line transition-all border border-transparent hover:border-white/5 focus:outline-none cursor-pointer"
-                  >
-                    <span className="text-[10px] text-indigo-400 font-mono font-bold bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/10 h-fit select-none group-hover/line:bg-brand-indigo group-hover/line:text-white transition-colors">
-                      {formatTime(seg.start)}
-                    </span>
-                    <p className="text-zinc-300 text-sm leading-relaxed group-hover/line:text-white transition-colors flex-1">
-                      {seg.text}
-                    </p>
-                  </button>
-                ))
-              ) : (
-                <div className="text-center text-zinc-500 text-sm py-12">
-                  No transcript available for this video workspace.
-                </div>
-              )}
-            </div>
           </div>
         </div>
 
@@ -573,7 +531,7 @@ const StudyHub = () => {
                 {/* Markdown content container */}
                 <div className="prose prose-invert max-w-none prose-sm md:prose-base space-y-4">
                   {/* Premium CSS-driven markdown viewer */}
-                  <div className="markdown-body p-6 bg-zinc-900/20 border border-white/5 rounded-2xl leading-relaxed text-zinc-300">
+                  <div className="markdown-body bg-gradient-to-b from-zinc-900/40 to-zinc-950/40 border border-white/10 rounded-3xl p-8 shadow-xl shadow-black/20 backdrop-blur-sm">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {studyMaterial.notes}
                     </ReactMarkdown>
@@ -700,22 +658,25 @@ const StudyHub = () => {
 
             {/* 4. INTERACTIVE QUIZ TAB */}
             {activeTab === "quiz" && (
-              <div className="max-w-xl mx-auto py-2">
+              <div className="max-w-2xl mx-auto py-4 space-y-6">
                 {studyMaterial.quizzes && studyMaterial.quizzes.length > 0 ? (
                   !quizCompleted ? (
-                    <div className="space-y-6">
-                      {/* Score indicator */}
-                      <div className="flex justify-between items-center text-xs text-zinc-500 bg-zinc-900/20 px-4 py-3 rounded-xl border border-white/5">
+                    <div className="space-y-6 animate-fade-in">
+                      {/* Progress Header */}
+                      <div className="flex justify-between items-center bg-zinc-900/30 px-4 py-3 rounded-xl border border-white/5 text-xs text-zinc-400">
                         <span>
-                          Question {currentQuizIdx + 1} of{" "}
+                          Question {currentQuizIdx + 1} /{" "}
                           {studyMaterial.quizzes.length}
                         </span>
-                        <span>Score: {quizScore}</span>
+
+                        <span className="text-indigo-400 font-semibold">
+                          Score: {quizScore}
+                        </span>
                       </div>
 
-                      {/* Question Text */}
-                      <div className="glass-panel p-6 rounded-2xl border border-white/5">
-                        <h3 className="font-display font-semibold text-base md:text-lg text-white leading-relaxed">
+                      {/* Question Card */}
+                      <div className="glass-panel p-6 md:p-8 rounded-2xl border border-white/5 shadow-lg">
+                        <h3 className="font-display text-base md:text-xl text-white leading-relaxed font-semibold">
                           {studyMaterial.quizzes[currentQuizIdx].question}
                         </h3>
                       </div>
@@ -725,28 +686,31 @@ const StudyHub = () => {
                         {studyMaterial.quizzes[currentQuizIdx].options.map(
                           (opt, oIdx) => {
                             const isSelected = selectedOptionIdx === oIdx;
-                            const isCorrectOption =
+                            const isCorrect =
                               oIdx ===
                               studyMaterial.quizzes[currentQuizIdx]
                                 .correctAnswerIndex;
 
-                            let buttonStyle =
+                            let baseStyle =
+                              "w-full text-left px-5 py-4 rounded-xl border text-sm md:text-base font-medium transition-all flex items-center justify-between";
+
+                            let stateStyle =
                               "bg-zinc-900/40 hover:bg-zinc-900 border-white/5 text-zinc-300";
 
                             if (quizSubmitted) {
-                              if (isCorrectOption) {
-                                buttonStyle =
-                                  "bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
+                              if (isCorrect) {
+                                stateStyle =
+                                  "bg-emerald-500/10 border-emerald-500/30 text-emerald-300";
                               } else if (isSelected) {
-                                buttonStyle =
-                                  "bg-brand-pink/15 border-brand-pink/30 text-brand-pink";
+                                stateStyle =
+                                  "bg-red-500/10 border-red-500/30 text-red-300";
                               } else {
-                                buttonStyle =
-                                  "bg-zinc-950/20 border-white/5 text-zinc-600 opacity-60";
+                                stateStyle =
+                                  "opacity-40 bg-zinc-950/20 border-white/5 text-zinc-600";
                               }
                             } else if (isSelected) {
-                              buttonStyle =
-                                "bg-brand-indigo/15 border-brand-indigo/40 text-indigo-400 font-semibold";
+                              stateStyle =
+                                "bg-indigo-500/10 border-indigo-400/40 text-indigo-300";
                             }
 
                             return (
@@ -754,15 +718,16 @@ const StudyHub = () => {
                                 key={oIdx}
                                 disabled={quizSubmitted}
                                 onClick={() => handleOptionSelect(oIdx)}
-                                className={`w-full text-left px-5 py-4 rounded-xl border text-sm font-medium transition-all focus:outline-none flex justify-between items-center ${buttonStyle} ${
+                                className={`${baseStyle} ${stateStyle} ${
                                   !quizSubmitted
-                                    ? "hover:scale-[1.01] hover:border-brand-indigo/25 cursor-pointer"
+                                    ? "hover:scale-[1.01] cursor-pointer"
                                     : ""
                                 }`}
                               >
-                                <span>{opt}</span>
-                                {quizSubmitted && isCorrectOption && (
-                                  <Check className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
+                                <span className="pr-4">{opt}</span>
+
+                                {quizSubmitted && isCorrect && (
+                                  <Check className="w-4 h-4 text-emerald-400" />
                                 )}
                               </button>
                             );
@@ -770,85 +735,84 @@ const StudyHub = () => {
                         )}
                       </div>
 
-                      {/* Explanation Reveal */}
+                      {/* Explanation */}
                       {quizSubmitted && (
-                        <div className="p-5 rounded-2xl bg-indigo-950/20 border border-brand-indigo/15 space-y-2 animate-pulse-slow">
-                          <span className="text-[10px] text-brand-indigo uppercase font-extrabold tracking-wider block">
+                        <div className="p-5 rounded-2xl bg-indigo-950/20 border border-brand-indigo/15 space-y-2">
+                          <p className="text-[10px] uppercase tracking-wider text-indigo-400 font-bold mb-2">
                             Explanation
-                          </span>
-                          <p className="text-zinc-300 text-xs md:text-sm leading-relaxed">
+                          </p>
+                          <p className="text-zinc-300 text-xs md:text-sm leading-relaxed whitespace-pre-line">
                             {studyMaterial.quizzes[currentQuizIdx].explanation}
                           </p>
                         </div>
                       )}
 
-                      {/* Bottom action trigger */}
+                      {/* Actions */}
                       <div className="flex justify-end pt-2">
                         {!quizSubmitted ? (
                           <button
                             disabled={selectedOptionIdx === null}
                             onClick={handleQuizSubmit}
-                            className="bg-brand-indigo hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-xl transition-all cursor-pointer"
+                            className="bg-gradient-to-r from-indigo-500 to-violet-500 disabled:opacity-50 text-white font-semibold py-3 px-8 rounded-xl transition-all cursor-pointer"
                           >
                             Submit Answer
                           </button>
                         ) : (
                           <button
                             onClick={handleQuizNext}
-                            className="bg-gradient-to-r from-brand-indigo to-brand-violet text-white font-bold py-3 px-8 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                            className="bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-semibold py-3 px-8 rounded-xl flex items-center gap-2"
                           >
                             {currentQuizIdx < studyMaterial.quizzes.length - 1
-                              ? "Next Question"
-                              : "Finish Quiz"}
+                              ? "Next"
+                              : "Finish"}
                             <ChevronRight className="w-4 h-4" />
                           </button>
                         )}
                       </div>
                     </div>
                   ) : (
-                    /* Score card report results */
-                    <div className="glass-panel p-8 rounded-3xl text-center max-w-sm mx-auto border border-white/5 space-y-6">
-                      <div className="w-20 h-20 rounded-full bg-brand-indigo/10 border-2 border-brand-indigo flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/10">
+                    /* Results Card */
+                    <div className="glass-panel p-8 rounded-3xl text-center max-w-md mx-auto border border-white/5 space-y-6 animate-fade-in">
+                      <div className="w-20 h-20 mx-auto rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center">
                         <Award className="w-8 h-8 text-indigo-400" />
                       </div>
 
                       <div>
-                        <h3 className="font-display font-bold text-2xl text-white">
-                          Quiz Finished
+                        <h3 className="text-2xl font-bold text-white">
+                          Quiz Complete
                         </h3>
-                        <p className="text-zinc-500 text-xs mt-1">
-                          Grounding knowledge tested successfully
+                        <p className="text-zinc-500 text-sm mt-1">
+                          Great work finishing the session
                         </p>
                       </div>
 
-                      <div className="bg-zinc-900/40 p-4 rounded-2xl border border-white/5 flex justify-around">
+                      <div className="bg-zinc-900/40 border border-white/5 rounded-2xl p-4 flex justify-between">
                         <div>
-                          <span className="text-xs text-zinc-500 block uppercase tracking-wider font-bold">
-                            Accuracy
-                          </span>
-                          <span className="text-2xl font-bold text-white">
+                          <p className="text-xs text-zinc-500">Accuracy</p>
+                          <p className="text-xl font-bold text-white">
                             {Math.round(
                               (quizScore / studyMaterial.quizzes.length) * 100,
                             )}
                             %
-                          </span>
+                          </p>
                         </div>
-                        <div className="w-[1px] bg-zinc-800"></div>
+
+                        <div className="w-px bg-zinc-800" />
+
                         <div>
-                          <span className="text-xs text-zinc-500 block uppercase tracking-wider font-bold">
-                            Correct
-                          </span>
-                          <span className="text-2xl font-bold text-white">
-                            {quizScore} / {studyMaterial.quizzes.length}
-                          </span>
+                          <p className="text-xs text-zinc-500">Score</p>
+                          <p className="text-xl font-bold text-white">
+                            {quizScore}/{studyMaterial.quizzes.length}
+                          </p>
                         </div>
                       </div>
 
                       <button
                         onClick={handleResetQuiz}
-                        className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold py-3.5 px-4 rounded-xl border border-white/5 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="w-full bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
                       >
-                        <RefreshCw className="w-4 h-4" /> Retry Test
+                        <RefreshCw className="w-4 h-4" />
+                        Retry Quiz
                       </button>
                     </div>
                   )
@@ -862,6 +826,7 @@ const StudyHub = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

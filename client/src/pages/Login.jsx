@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState("");
+
   const { login, error, loading, clearError } = useAuth();
   const navigate = useNavigate();
 
@@ -25,77 +26,118 @@ const Login = () => {
       await login(email, password);
       navigate("/");
     } catch (err) {
-      // Error handled by AuthContext
+      console.error(err);
     }
   };
 
   return (
-    <div className="min-h-screen bg-bg-darker bg-gradient-mesh flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Decorative Blur Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-indigo/10 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-pink/5 rounded-full blur-3xl -z-10 animate-float"></div>
+    <div className="min-h-screen relative overflow-hidden bg-[#070B14] flex items-center justify-center px-6 py-10">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-indigo/10 via-transparent to-brand-violet/10" />
 
-      <div className="w-full max-w-md glass-panel p-8 rounded-3xl relative z-10">
-        {/* Header Logo */}
+      {/* Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `
+        linear-gradient(to right, white 1px, transparent 1px),
+        linear-gradient(to bottom, white 1px, transparent 1px)
+      `,
+          backgroundSize: "40px 40px",
+        }}
+      />
+
+      {/* Blur Orbs */}
+      <div className="absolute top-20 left-20 w-[500px] h-[500px] bg-brand-indigo/20 rounded-full blur-[140px] animate-pulse" />
+
+      <div className="absolute bottom-20 right-20 w-[500px] h-[500px] bg-brand-violet/20 rounded-full blur-[140px] animate-pulse" />
+
+      {/* Floating Feature Cards */}
+      <div className="hidden xl:block absolute left-[10%] top-[28%] glass-panel rounded-2xl p-4 animate-float">
+        <p className="text-sm text-zinc-300">🧠 AI Notes</p>
+      </div>
+
+      <div className="hidden xl:block absolute right-[12%] top-[22%] glass-panel rounded-2xl p-4 animate-float">
+        <p className="text-sm text-zinc-300">📚 Flashcards</p>
+      </div>
+
+      <div
+        className="hidden xl:block absolute right-[15%] bottom-[22%] glass-panel rounded-2xl p-4 animate-float"
+        style={{ animationDelay: "1s" }}
+      >
+        <p className="text-sm text-zinc-300">🎯 Quizzes</p>
+      </div>
+
+      {/* Login Card */}
+      <div className="w-full max-w-md glass-panel rounded-3xl p-8 relative z-10 shadow-2xl shadow-brand-indigo/10">
+        {/* Header */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-gradient-to-tr from-brand-indigo to-brand-violet p-3 rounded-2xl shadow-xl shadow-brand-indigo/20 mb-3 animate-float">
-            <Brain className="w-8 h-8 text-white" />
+          <div className="relative mb-5">
+            <div className="absolute inset-0 bg-brand-indigo blur-2xl opacity-30 rounded-full" />
+
+            <div className="relative bg-gradient-to-tr from-brand-indigo to-brand-violet p-4 rounded-3xl">
+              <Brain className="w-8 h-8 text-white" />
+            </div>
           </div>
-          <h2 className="font-display font-bold text-3xl text-white">
+
+          <h2 className="font-display font-bold text-4xl text-white">
             Welcome Back
           </h2>
-          <p className="text-zinc-400 text-sm mt-1">
-            Ready to unlock another video study session?
+
+          <p className="text-zinc-400 mt-2 text-center">
+            Continue your AI-powered learning journey
           </p>
         </div>
 
-        {/* Errors */}
         {(localError || error) && (
-          <div className="mb-6 p-4 rounded-xl bg-brand-pink/10 border border-brand-pink/20 text-brand-pink text-sm font-medium animate-pulse">
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
             {localError || error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email input */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-zinc-400 tracking-wide block uppercase">
+          {/* Email */}
+          <div>
+            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-2">
               Email Address
             </label>
+
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-zinc-900/50 hover:bg-zinc-900/80 focus:bg-bg-dark/80 text-white pl-12 pr-4 py-3.5 rounded-xl border border-white/5 focus:border-brand-indigo/50 focus:ring-1 focus:ring-brand-indigo/30 outline-none transition-all placeholder-zinc-600 text-sm font-medium"
+                className="w-full bg-zinc-900/50 border border-white/10 text-white pl-12 pr-4 py-4 rounded-xl outline-none focus:border-brand-indigo/50 focus:ring-1 focus:ring-brand-indigo/30 transition-all"
               />
             </div>
           </div>
 
-          {/* Password input */}
-          <div className="space-y-1">
-            <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wide block uppercase">
-                Password
-              </label>
-            </div>
+          {/* Password */}
+          <div>
+            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-2">
+              Password
+            </label>
+
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-zinc-900/50 hover:bg-zinc-900/80 focus:bg-bg-dark/80 text-white pl-12 pr-12 py-3.5 rounded-xl border border-white/5 focus:border-brand-indigo/50 focus:ring-1 focus:ring-brand-indigo/30 outline-none transition-all placeholder-zinc-600 text-sm font-medium"
+                className="w-full bg-zinc-900/50 border border-white/10 text-white pl-12 pr-12 py-4 rounded-xl outline-none focus:border-brand-indigo/50 focus:ring-1 focus:ring-brand-indigo/30 transition-all"
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors focus:outline-none cursor-pointer"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
               >
                 {showPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -106,30 +148,30 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Submit */}
+          {/* Login Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-brand-indigo to-brand-violet hover:from-brand-indigo/90 hover:to-brand-violet/90 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-brand-indigo/20 hover:shadow-brand-indigo/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
+            className="w-full bg-gradient-to-r from-brand-indigo to-brand-violet hover:from-brand-indigo/90 hover:to-brand-violet/90 text-white font-semibold py-4 rounded-xl shadow-lg shadow-brand-indigo/20 hover:shadow-brand-indigo/40 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
-              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 Sign In
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
 
-        {/* Toggle Footer */}
+        {/* Footer */}
         <div className="mt-8 text-center text-sm text-zinc-400">
           New to EduMind?{" "}
           <Link
             to="/register"
             onClick={clearError}
-            className="text-indigo-400 hover:text-indigo-300 font-semibold underline decoration-indigo-400/30 underline-offset-4 hover:decoration-indigo-300 transition-all"
+            className="text-brand-indigo hover:text-brand-violet font-semibold transition-colors"
           >
             Create an account
           </Link>

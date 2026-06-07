@@ -32,17 +32,84 @@ ${transcriptText}
 export const generateNotes = async (transcriptText) => {
   try {
     const prompt = `
-You are an expert educator. Create a comprehensive, well-structured, and beautifully formatted set of study notes in Markdown based on the following transcript.
-Organize the notes logically using:
-- Markdown headers (h2, h3)
-- Clear bullet points and numbered lists
-- Bold text for key terms
-- Blockquotes for important warnings or notes
-- Fenced code blocks if coding/technical concepts are mentioned
+You are an elite university professor and study-note creator.
 
-Make the notes very thorough, covering all important facts, technical details, and methodologies mentioned in the transcript.
+Convert the transcript into BEAUTIFULLY FORMATTED MARKDOWN STUDY NOTES.
+
+IMPORTANT FORMATTING RULES:
+
+# Video Title / Topic
+
+## Overview
+Write a short overview of the lesson.
+
+## Key Concepts
+
+For every major concept:
+
+### Concept Name
+
+- Important point
+- Important point
+- Important point
+
+### Example
+
+> Provide examples when available.
+
+### Key Takeaways
+
+- Takeaway 1
+- Takeaway 2
+
+## Detailed Notes
+
+Use:
+- Bullet points
+- Numbered lists
+- Tables when useful
+- Bold important terminology
+- Blockquotes for important ideas
+
+Example table format:
+
+| Term | Meaning |
+|------|---------|
+| Example | Description |
+
+## Important Facts
+
+- Fact 1
+- Fact 2
+- Fact 3
+
+## Exam Notes
+
+### Things to Remember
+
+- Important exam point
+- Important exam point
+
+### Common Mistakes
+
+- Mistake 1
+- Mistake 2
+
+## Summary
+
+Provide a concise summary of the lesson.
+
+STRICT RULES:
+- ALWAYS use Markdown headings (# ## ###)
+- ALWAYS use bullet points
+- NEVER return plain paragraphs only
+- Format content like professional university notes
+- Make notes visually attractive and easy to scan
+- Use bold text frequently for important concepts
+- Use tables whenever concepts can be compared
 
 Transcript:
+
 ${transcriptText}
 `;
 
@@ -109,18 +176,30 @@ ${transcriptText}
  */
 export const generateQuiz = async (transcriptText) => {
   try {
-    const prompt = `
-Based on the following video transcript, generate a multiple-choice quiz containing 5-8 challenging questions.
-For each question:
-- Provide 4 distinct options (multiple-choice).
-- Identify the zero-based index of the correct answer (0, 1, 2, or 3).
-- Provide a detailed explanation explaining why the correct answer is correct and why other options are incorrect.
+const prompt = `
+You are an expert quiz generator for students.
 
-You must respond with a JSON array of objects. Each object in the array must strictly have these fields:
-- "question": string containing the question
-- "options": array of exactly 4 strings (options)
-- "correctAnswerIndex": integer (0 to 3) representing the index of the correct option
-- "explanation": string containing the detailed explanation / breakdown
+Create 5–8 multiple-choice questions from the transcript.
+
+STRICT RULES:
+- Questions MUST be short and readable (max 2 lines)
+- DO NOT include code blocks (no \`\`\`)
+- DO NOT include long JavaScript or examples inside questions
+- If code is needed, summarize it in plain English
+- Keep each question clean and exam-style
+- Options must be short (max 1 line each)
+- Avoid explanations inside questions
+
+OUTPUT FORMAT (STRICT JSON ONLY):
+Return ONLY a valid JSON array. No markdown. No extra text.
+
+Each object must have:
+{
+  "question": "string",
+  "options": ["string", "string", "string", "string"],
+  "correctAnswerIndex": 0,
+  "explanation": "string"
+}
 
 Transcript:
 ${transcriptText}
@@ -135,26 +214,27 @@ ${transcriptText}
     });
 
     const quizzes = JSON.parse(response.text);
+
     if (!Array.isArray(quizzes)) {
-      throw new Error("Response is not a valid JSON array");
+      throw new Error("Invalid quiz format");
     }
+
     return quizzes;
   } catch (error) {
     console.error("Error generating quiz:", error);
-    // Fallback quiz in case of failure
+
     return [
       {
-        question:
-          "Which of the following is the best way to study from this video?",
+        question: "What is the main purpose of this video?",
         options: [
-          "Review the structured study notes",
-          "Ask questions in the AI Chat assistant",
-          "Test yourself with flashcards",
-          "All of the above",
+          "Understand key concepts",
+          "Memorize full code examples",
+          "Ignore explanations",
+          "Skip learning process",
         ],
-        correctAnswerIndex: 3,
+        correctAnswerIndex: 0,
         explanation:
-          "All tools are designed to work together to reinforce learning from the video.",
+          "The goal of the video content is to help learners understand core concepts clearly.",
       },
     ];
   }

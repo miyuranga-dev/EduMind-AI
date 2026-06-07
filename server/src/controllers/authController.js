@@ -25,11 +25,10 @@ export const registerUser = async (req, res) => {
 
     res.status(201).json({
       message: "User created successfully",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      token: generateToken(user._id),
+      name: user.name,
+      email: user.email,
+      _id: user._id,
     });
   } catch (error) {
     console.error(error);
@@ -65,11 +64,9 @@ export const loginUser = async (req, res) => {
     res.json({
       message: "Login successful",
       token: generateToken(user._id),
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      name: user.name,
+      email: user.email,
+      _id: user._id,
     });
   } catch (error) {
     console.error(error);
@@ -81,5 +78,21 @@ export const loginUser = async (req, res) => {
 };
 
 export const getMe = async (req, res) => {
-  res.json(req.user);
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: "User not found",
+      });
+    }
+    res.json({
+      _id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
 };

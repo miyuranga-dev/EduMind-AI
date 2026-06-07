@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { videosAPI } from "../utils/api";
+import Footer from "../components/Footer";
 import {
   Search,
   Play,
@@ -77,7 +78,7 @@ const Library = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-darker text-white pb-12">
+    <div className="min-h-screen bg-bg-darker text-white pb-12 flex flex-col">
       <div className="max-w-6xl mx-auto px-6 md:px-12 pt-8 md:pt-12">
         {/* Title Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
@@ -215,6 +216,7 @@ const Library = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

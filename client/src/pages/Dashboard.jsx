@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { videosAPI } from "../utils/api";
+import Footer from "../components/Footer";
 import {
   Play,
   Search,
@@ -122,14 +123,14 @@ const Dashboard = () => {
       console.error(err);
       setError(
         err.message ||
-          "Failed to process video. Please check the URL and try again.",
+        "Failed to process video. Please check the URL and try again.",
       );
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-bg-darker text-white pb-12">
+    <div className="min-h-screen bg-bg-darker text-white pb-12 flex flex-col">
       {/* Background radial effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-brand-indigo/5 via-brand-violet/2 to-transparent blur-3xl pointer-events-none -z-10"></div>
 
@@ -283,13 +284,12 @@ const Dashboard = () => {
                   return (
                     <div
                       key={idx}
-                      className={`flex items-center gap-4 transition-all duration-500 ${
-                        isCompleted
+                      className={`flex items-center gap-4 transition-all duration-500 ${isCompleted
                           ? "text-zinc-400"
                           : isActive
                             ? "text-brand-indigo font-medium scale-[1.01]"
                             : "text-zinc-600"
-                      }`}
+                        }`}
                     >
                       {isCompleted ? (
                         <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
@@ -391,8 +391,9 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
-};
+}
 
 export default Dashboard;

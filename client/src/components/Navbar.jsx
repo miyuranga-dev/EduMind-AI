@@ -18,6 +18,7 @@ const Navbar = () => {
 
   // Get initials for profile badge
   const getInitials = (name) => {
+    if (!name || typeof name !== 'string') return 'U';
     return name
       .split(" ")
       .map((n) => n[0])
@@ -70,9 +71,9 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           <div className="hidden md:flex flex-col text-right">
             <span className="text-sm font-semibold text-zinc-200">
-              {user.name}
+              {user.name || 'User'}
             </span>
-            <span className="text-xs text-zinc-500">{user.email}</span>
+            <span className="text-xs text-zinc-500">{user.email || 'N/A'}</span>
           </div>
 
           {/* Profile Circle */}

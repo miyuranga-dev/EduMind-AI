@@ -144,3 +144,160 @@
 .flashcard-back {
   transform: rotateY(180deg);
 }
+
+@keyframes float {
+0% {
+transform: translateY(0px);
+}
+
+50% {
+transform: translateY(-50px);
+}
+
+100% {
+transform: translateY(0px);
+}
+}
+
+.animate-float {
+animation: float 5 ease-in-out infinite;
+}
+
+.markdown-body {
+  color: #d4d4d8;
+  line-height: 1.9;
+}
+
+/* Headings */
+
+.markdown-body h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 2rem 0 1rem;
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 0.75rem;
+}
+
+.markdown-body h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1.75rem 0 1rem;
+  color: #818cf8;
+}
+
+.markdown-body h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.75rem;
+  color: #a78bfa;
+}
+
+/* Paragraphs */
+
+.markdown-body p {
+  margin: 1rem 0;
+  color: #d4d4d8;
+}
+
+/* Lists */
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.markdown-body li {
+  margin: 0.5rem 0;
+}
+
+.markdown-body ul li::marker {
+  color: #818cf8;
+}
+
+.markdown-body ol li::marker {
+  color: #818cf8;
+  font-weight: 700;
+}
+
+/* Bold */
+
+.markdown-body strong {
+  color: white;
+  font-weight: 700;
+}
+
+/* Links */
+
+.markdown-body a {
+  color: #818cf8;
+  text-decoration: none;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+/* Code */
+
+.markdown-body code {
+  background: rgba(99, 102, 241, 0.15);
+  color: #c4b5fd;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.markdown-body pre {
+  background: #09090b;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.markdown-body pre code {
+  background: transparent;
+  padding: 0;
+}
+
+/* Blockquote */
+
+.markdown-body blockquote {
+  border-left: 4px solid #6366f1;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #a1a1aa;
+  font-style: italic;
+}
+
+/* Tables */
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.markdown-body th {
+  background: rgba(99, 102, 241, 0.1);
+  color: white;
+  padding: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.markdown-body td {
+  padding: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Horizontal Rule */
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 2rem 0;
+}
+
