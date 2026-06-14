@@ -7,12 +7,42 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  if (!user) return null;
+  const brandLink = user ? "/dashboard" : "/";
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
+
+  if (!user) {
+    return (
+      <nav className="sticky top-0 z-50 glass-panel border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center">
+        <Link to={brandLink} className="flex items-center gap-2 group">
+          <div className="bg-gradient-to-tr from-brand-indigo to-brand-violet p-2 rounded-xl shadow-lg shadow-brand-indigo/20 group-hover:scale-105 transition-transform">
+            <Brain className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-display font-bold text-xl tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+            EduMind<span className="text-brand-pink font-extrabold">AI</span>
+          </span>
+        </Link>
+
+        <div className="flex items-center gap-3">
+          <Link
+            to="/login"
+            className="px-4 py-2 rounded-xl text-sm font-medium text-zinc-200 hover:text-white hover:bg-white/5 border border-white/10 transition-colors"
+          >
+            Login
+          </Link>
+          <Link
+            to="/register"
+            className="px-4 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-brand-indigo to-brand-violet text-white shadow-lg shadow-brand-indigo/20 hover:opacity-90 transition-opacity"
+          >
+            Sign Up
+          </Link>
+        </div>
+      </nav>
+    );
+  }
 
   const isActive = (path) => location.pathname === path;
 
@@ -30,7 +60,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 glass-panel border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center">
       {/* Brand Logo */}
-      <Link to="/" className="flex items-center gap-2 group">
+      <Link to={brandLink} className="flex items-center gap-2 group">
         <div className="bg-gradient-to-tr from-brand-indigo to-brand-violet p-2 rounded-xl shadow-lg shadow-brand-indigo/20 group-hover:scale-105 transition-transform">
           <Brain className="w-5 h-5 text-white" />
         </div>
@@ -42,9 +72,9 @@ const Navbar = () => {
       {/* Nav Links */}
       <div className="flex items-center gap-1 md:gap-4">
         <Link
-          to="/"
+          to="/dashboard"
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-            isActive("/")
+            isActive("/dashboard")
               ? "bg-brand-indigo/15 text-indigo-400 border border-brand-indigo/20"
               : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
           }`}

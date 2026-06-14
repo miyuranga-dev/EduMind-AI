@@ -6,10 +6,7 @@ import {
   fetchMetadata,
 } from "../utils/youtube.js";
 import {
-  generateSummary,
-  generateNotes,
-  generateFlashcards,
-  generateQuiz,
+  generateAllStudyMaterials,
 } from "../utils/geminiService.js";
 import ai from "../config/gemini.js";
 
@@ -64,13 +61,8 @@ export const processVideo = async (req, res) => {
       duration = lastSeg.start + lastSeg.duration;
     }
 
-    // 2. Generate study materials via Gemini in parallel
-    const [summary, notes, flashcards, quizzes] = await Promise.all([
-      generateSummary(transcriptText),
-      generateNotes(transcriptText),
-      generateFlashcards(transcriptText),
-      generateQuiz(transcriptText),
-    ]);
+    // 2. Generate study materials via Gemini in a single request
+    const { summary, notes, flashcards, quizzes } = await generateAllStudyMaterials(transcriptText);
 
     // 3. Create the Video document
     const video = await Video.create({
