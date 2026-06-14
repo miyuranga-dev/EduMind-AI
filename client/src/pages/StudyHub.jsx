@@ -4,6 +4,19 @@ import { videosAPI } from "../utils/api";
 import Footer from "../components/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { marked } from "marked";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import htmlToPdfmake from "html-to-pdfmake";
+
+// Safely initialize fonts for Vite environment
+if (pdfFonts && pdfFonts.pdfMake && pdfFonts.pdfMake.vfs) {
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+} else if (pdfFonts && pdfFonts.vfs) {
+  pdfMake.vfs = pdfFonts.vfs;
+} else if (window.pdfMake && window.pdfMake.vfs) {
+  pdfMake.vfs = window.pdfMake.vfs;
+}
 import {
   ArrowLeft,
   Brain,
@@ -20,12 +33,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Play,
+  Download,
 } from "lucide-react";
 
 const StudyHub = () => {
   const { id } = useParams();
   const iframeRef = useRef(null);
   const chatEndRef = useRef(null);
+  const notesRef = useRef(null);
 
   // Core data states
   const [video, setVideo] = useState(null);
@@ -57,6 +72,7 @@ const StudyHub = () => {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
   useEffect(() => {
     const fetchVideoDetails = async () => {
@@ -163,6 +179,114 @@ const StudyHub = () => {
   // ------------------
   // Notes Completed
   // ------------------
+  const handleDownloadPdf = () => {
+    setIsDownloadingPdf(true);
+    
+    try {
+      // Parse markdown to HTML string
+      const htmlContent = marked.parse(studyMaterial.notes);
+      
+      // Convert HTML to pdfmake format with tighter defaults
+      const pdfMakeContent = htmlToPdfmake(htmlContent, {
+        defaultStyles: {
+          h1: { fontSize: 20, bold: true, margin: [0, 12, 0, 6], color: '#111827' },
+          h2: { fontSize: 18, bold: true, margin: [0, 10, 0, 4], color: '#111827' },
+          h3: { fontSize: 14, bold: true, margin: [0, 8, 0, 4], color: '#111827' },
+          p: { margin: [0, 4, 0, 6] },
+          ul: { margin: [0, 2, 0, 6] },
+          ol: { margin: [0, 2, 0, 6] },
+          li: { margin: [0, 2, 0, 2] },
+          blockquote: { margin: [10, 4, 0, 4], italics: true, color: '#666666' }
+        }
+      });
+      
+      // Define the PDF document structure and styling
+      const documentDefinition = {
+        content: pdfMakeContent,
+        defaultStyle: {
+          fontSize: 11,
+          lineHeight: 1.4,
+          color: '#333333'
+        },
+        pageMargins: [50, 60, 50, 60], // Increased to accommodate border and header/footer
+        background: function(currentPage, pageSize) {
+          return {
+            canvas: [
+              {
+                type: 'rect',
+                x: 20,
+                y: 20,
+                w: pageSize.width - 40,
+                h: pageSize.height - 40,
+                lineWidth: 1,
+                lineColor: '#000000'
+              }
+            ]
+          };
+        },
+        header: function(currentPage, pageCount, pageSize) {
+          return {
+            columns: [
+              { 
+                text: video?.title || "Study Notes", 
+                alignment: 'left', 
+                fontSize: 9, 
+                color: '#666666',
+                margin: [35, 30, 0, 0] // Left, Top, Right, Bottom
+              },
+              { 
+                text: 'EduMind AI', 
+                alignment: 'right', 
+                fontSize: 9, 
+                color: '#666666',
+                margin: [0, 30, 35, 0] 
+              }
+            ]
+          };
+        },
+        footer: function(currentPage, pageCount, pageSize) {
+          return {
+            columns: [
+              { 
+                text: 'Developed by Miyuranga', 
+                alignment: 'left', 
+                fontSize: 9, 
+                color: '#666666',
+                margin: [35, 0, 0, 30] 
+              },
+              { 
+                text: `Page ${currentPage} of ${pageCount}`, 
+                alignment: 'right', 
+                fontSize: 9, 
+                color: '#666666',
+                margin: [0, 0, 35, 30] 
+              }
+            ]
+          };
+        },
+        // Prevent awkward breaks between headers and the paragraph immediately following
+        pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+          // If the current node is a header, and it's near the bottom, push it to the next page
+          if (currentNode.headlineLevel && followingNodesOnPage.length === 0) {
+            return true;
+          }
+          return false;
+        }
+      };
+
+      const filename = `${video?.title ? video.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() : "study"}-notes.pdf`;
+      
+      // Generate and trigger direct download
+      pdfMake.createPdf(documentDefinition).download(filename);
+      
+      // Reset loading state after a short delay to allow download to start
+      setTimeout(() => { setIsDownloadingPdf(false); }, 1000);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      setIsDownloadingPdf(false);
+    }
+  };
+
   const handleToggleNotes = async () => {
     const newStatus = !userProgress.notesCompleted;
     try {
@@ -507,25 +631,35 @@ const StudyHub = () => {
                       Check this box when you finish reviewing the notes
                     </p>
                   </div>
-                  <button
-                    onClick={handleToggleNotes}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                      userProgress.notesCompleted
-                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                        : "bg-zinc-900/80 hover:bg-zinc-900 text-zinc-400 border-white/5"
-                    }`}
-                  >
-                    {userProgress.notesCompleted ? (
-                      <>
-                        <CheckSquare className="w-4 h-4" /> Notes Read
-                      </>
-                    ) : (
-                      <>
-                        <div className="w-4 h-4 border border-zinc-500 rounded"></div>{" "}
-                        Mark as Read
-                      </>
-                    )}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={handleDownloadPdf}
+                      disabled={isDownloadingPdf}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer bg-brand-indigo/10 text-indigo-400 hover:bg-brand-indigo/20 border-brand-indigo/20 disabled:opacity-50"
+                    >
+                      <Download className="w-4 h-4" /> 
+                      {isDownloadingPdf ? "Generating..." : "Download PDF"}
+                    </button>
+                    <button
+                      onClick={handleToggleNotes}
+                      className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                        userProgress.notesCompleted
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          : "bg-zinc-900/80 hover:bg-zinc-900 text-zinc-400 border-white/5"
+                      }`}
+                    >
+                      {userProgress.notesCompleted ? (
+                        <>
+                          <CheckSquare className="w-4 h-4" /> Notes Read
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-4 h-4 border border-zinc-500 rounded"></div>{" "}
+                          Mark as Read
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Markdown content container */}

@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "html-to-pdfmake": "^2.5.33",
+    "html2pdf.js": "^0.14.0",
     "lucide-react": "^0.475.0",
+    "marked": "^18.0.5",
+    "pdfmake": "^0.3.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.1",
