@@ -1,18 +1,105 @@
-# 🚀 EduMind AI
+<div align="center">
 
-EduMind AI is an AI-powered study assistant that transforms YouTube educational videos into interactive learning materials. By simply providing a YouTube video URL, users can generate summaries, study notes, flashcards, quizzes, and chat with AI to enhance their learning experience.
+<h1>🚀 EduMind AI</h1>
+
+<h3>AI-Powered Study Assistant</h3>
+
+<p>
+Transform YouTube educational videos into intelligent study materials using AI.
+</p>
+
+<p>
+📝 Summaries • 📚 Notes • 🎴 Flashcards • ❓ Quizzes • 💬 AI Chat
+</p>
+
+</div>
+
+---
+
+## 🌟 Overview
+
+EduMind AI is a full-stack AI-powered learning platform that helps students learn more effectively from YouTube educational content.
+
+Simply paste a YouTube video URL and EduMind AI automatically extracts the transcript, analyzes the content using AI, and generates interactive study materials to improve learning and retention.
+
+---
 
 ## ✨ Features
 
-* 📺 YouTube Video Processing
-* 📝 AI-Generated Summaries
-* 📚 Smart Study Notes
-* 🎴 Interactive Flashcards
-* ❓ AI-Powered Quiz Generation
-* 💬 AI Chat Assistant
-* 🔐 User Authentication & Authorization
-* 🔖 Save and Manage Study Materials
-* 📱 Responsive Modern User Interface
+### 📺 YouTube Video Processing
+
+* Extracts video transcripts automatically
+* Processes educational content in seconds
+
+### 📝 AI-Powered Summaries
+
+* Generates concise summaries of lengthy videos
+* Highlights key concepts and important points
+
+### 📚 Smart Study Notes
+
+* Creates structured notes for efficient learning
+* Organizes information into easy-to-review sections
+
+### 🎴 Interactive Flashcards
+
+* Generates flashcards from video content
+* Supports active recall learning techniques
+
+### ❓ AI Quiz Generation
+
+* Creates quiz questions automatically
+* Helps evaluate understanding and retention
+
+### 💬 AI Chat Assistant
+
+* Ask questions about the video content
+* Receive context-aware AI responses
+
+### 🔐 User Authentication
+
+* Secure login and registration
+* Personalized learning experience
+
+---
+
+## 🖼️ Screenshots
+
+### 🏠 Home Page
+
+![Home Page](screenshots/home.png)
+
+---
+
+### 📊 Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+### 📝 AI Notes
+
+![AI Notes](screenshots/notes.png)
+
+---
+
+### 🎴 Flashcards
+
+![Flashcards](screenshots/flashcards.png)
+
+---
+
+### ❓ Quiz Generation
+
+![Quiz](screenshots/quiz.png)
+
+---
+
+### 💬 AI Chat Assistant
+
+![AI Chat](screenshots/chat.png)
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -35,26 +122,15 @@ EduMind AI is an AI-powered study assistant that transforms YouTube educational 
 
 * Google Gemini AI
 
-## 📸 Screenshots
+### Authentication
 
-Add screenshots of:
+* JWT Authentication
 
-1. Home Page
-2. Dashboard
-3. Summary Generation
-4. Notes Generation
-5. Flashcards
-6. Quiz Section
-7. AI Chat Interface
+---
 
-## 🎥 Project Demo
+## ⚙️ Installation
 
-YouTube Demo:
-https://www.youtube.com/watch?v=AG97Fq0QToo
-
-## 🚀 Installation
-
-### Clone the Repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/miyuranga-dev/EduMind-AI.git
@@ -64,11 +140,11 @@ cd EduMind-AI
 ### Backend Setup
 
 ```bash
-cd backend
+cd server
 npm install
 ```
 
-Create a `.env` file:
+Create a .env file:
 
 ```env
 MONGODB_URI=your_mongodb_uri
@@ -76,7 +152,7 @@ JWT_SECRET=your_jwt_secret
 GEMINI_API_KEY=your_gemini_api_key
 ```
 
-Start the backend:
+Run Backend:
 
 ```bash
 npm run server
@@ -85,45 +161,57 @@ npm run server
 ### Frontend Setup
 
 ```bash
-cd frontend
+cd client
 npm install
 npm run dev
 ```
 
-## 📂 Project Structure
-
-```text
-frontend/
-backend/
-├── controllers/
-├── models/
-├── routes/
-├── middleware/
-├── utils/
-```
+---
 
 ## 🎯 Learning Outcomes
 
-This project helped me gain experience in:
+Through this project, I gained experience in:
 
 * Full-Stack MERN Development
-* REST API Development
-* Authentication & Authorization
+* REST API Design
 * AI Integration with Gemini AI
-* Responsive UI Design
-* Database Management with MongoDB
+* Authentication & Authorization
+* MongoDB Database Management
+* Responsive UI Development
 * Modern Software Engineering Practices
 
-## 👨‍💻 Author
+---
+
+## 🎥 Project Demo
+
+Watch the project demo on YouTube:
+
+https://youtu.be/AG97Fq0QToo?si=svAojhSCaZt_3hem
+
+---
+
+## 👨‍💻 Developer
 
 Miyuranga
-
-LinkedIn:
-https://www.linkedin.com/in/miyuranga-dev/
 
 GitHub:
 https://github.com/miyuranga-dev
 
-## 📄 License
+LinkedIn:
+https://www.linkedin.com/in/miyuranga-dev/
 
-This project is developed for educational and portfolio purposes.
+---
+
+## ⭐ Support
+
+If you found this project interesting, consider giving it a star on GitHub!
+
+It helps support the project and motivates future development.
+
+---
+
+<div align="center">
+
+Made with ❤️ using React, Node.js, MongoDB & Gemini AI
+
+</div>
