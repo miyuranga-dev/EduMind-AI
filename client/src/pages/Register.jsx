@@ -35,7 +35,7 @@ const Register = () => {
 
     try {
       await register(name, email, password);
-      navigate("/login");
+      navigate("/dashboard");
     } catch (err) {
       // Error handled by AuthContext
     }

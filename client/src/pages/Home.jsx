@@ -1,17 +1,32 @@
 import { Link } from "react-router-dom";
 import {
-Brain,
-Sparkles,
-BookOpen,
-Video,
-CheckCircle2,
-ArrowRight,
-ShieldCheck,
-Zap,
+  Brain,
+  Sparkles,
+  BookOpen,
+  Video,
+  CheckCircle2,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
+import { motion } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 }
+  }
+};
 
 const Home = () => {
-return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text-white">
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-[#070B14] text-white">
 
 
   {/* Background Effects */}
@@ -24,27 +39,37 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
     {/* HERO */}
     <section className="pt-24 pb-20">
 
-      <div className="flex justify-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="flex justify-center"
+      >
+        <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300">
           <Sparkles className="w-4 h-4 text-brand-pink" />
           AI-powered learning workspace
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div className="mt-8 text-center max-w-5xl mx-auto">
-        <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.05]">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="mt-8 text-center max-w-5xl mx-auto"
+      >
+        <motion.h1 variants={fadeUp} className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.05]">
           Turn Any Video Into
           <span className="block bg-gradient-to-r from-brand-indigo via-brand-violet to-brand-pink bg-clip-text text-transparent">
             Smart Study Materials
           </span>
-        </h1>
+        </motion.h1>
 
-        <p className="mt-8 text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto leading-8">
+        <motion.p variants={fadeUp} className="mt-8 text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto leading-8">
           Upload lectures, tutorials, or educational videos and instantly
           generate summaries, flashcards, quizzes, and a searchable study library.
-        </p>
+        </motion.p>
 
-        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+        <motion.div variants={fadeUp} className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
           <Link
             to="/register"
             className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-indigo to-brand-violet px-8 py-4 font-semibold text-white shadow-xl shadow-brand-indigo/20 hover:scale-[1.02] transition-all"
@@ -59,11 +84,16 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
           >
             Log In
           </Link>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* AI Workspace Mockup */}
-      <div className="mt-20 relative">
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+        className="mt-20 relative"
+      >
 
         <div className="absolute inset-0 bg-gradient-to-r from-brand-indigo/20 via-brand-violet/20 to-brand-pink/20 blur-3xl" />
 
@@ -148,21 +178,27 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
 
         </div>
 
-      </div>
+      </motion.div>
 
     </section>
 
     {/* STATS */}
 
     <section className="py-10">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-6"
+      >
 
-        <div className="text-center">
+        <motion.div variants={fadeUp} className="text-center">
           <div className="text-4xl font-bold">1 Min</div>
           <p className="text-zinc-500 mt-2">
             Processing Time
           </p>
-        </div>
+        </motion.div>
 
         <div className="text-center">
           <div className="text-4xl font-bold">24/7</div>
@@ -178,21 +214,27 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
           </p>
         </div>
 
-        <div className="text-center">
+        <motion.div variants={fadeUp} className="text-center">
           <div className="text-4xl font-bold">∞</div>
           <p className="text-zinc-500 mt-2">
             Study Sessions
           </p>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </section>
 
     {/* FEATURES */}
 
     <section className="py-24">
 
-      <div className="text-center mb-16">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeUp}
+        className="text-center mb-16"
+      >
         <p className="uppercase tracking-[0.3em] text-brand-indigo/70 text-sm">
           Features
         </p>
@@ -200,11 +242,17 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
         <h2 className="mt-4 text-4xl md:text-5xl font-bold">
           Everything You Need To Learn Faster
         </h2>
-      </div>
+      </motion.div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="grid lg:grid-cols-3 gap-6"
+      >
 
-        <div className="lg:col-span-2 rounded-[2rem] border border-white/10 bg-white/5 p-8">
+        <motion.div variants={fadeUp} className="lg:col-span-2 rounded-[2rem] border border-white/10 bg-white/5 p-8">
           <Video className="w-8 h-8 text-brand-indigo mb-5" />
           <h3 className="text-2xl font-semibold">
             Video To Notes
@@ -212,9 +260,9 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
           <p className="mt-4 text-zinc-400 leading-7">
             Instantly convert long lectures into concise study notes and key insights.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
+        <motion.div variants={fadeUp} className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
           <BookOpen className="w-8 h-8 text-brand-pink mb-5" />
           <h3 className="text-2xl font-semibold">
             Flashcards
@@ -222,9 +270,9 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
           <p className="mt-4 text-zinc-400">
             AI-generated flashcards for efficient revision.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
+        <motion.div variants={fadeUp} className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
           <CheckCircle2 className="w-8 h-8 text-brand-violet mb-5" />
           <h3 className="text-2xl font-semibold">
             Smart Quizzes
@@ -232,9 +280,9 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
           <p className="mt-4 text-zinc-400">
             Test understanding with automatic quiz generation.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="lg:col-span-2 rounded-[2rem] border border-white/10 bg-white/5 p-8">
+        <motion.div variants={fadeUp} className="lg:col-span-2 rounded-[2rem] border border-white/10 bg-white/5 p-8">
           <ShieldCheck className="w-8 h-8 text-brand-cyan mb-5" />
           <h3 className="text-2xl font-semibold">
             Personal Study Library
@@ -242,9 +290,9 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
           <p className="mt-4 text-zinc-400">
             Save all notes, flashcards, quizzes and study progress in one place.
           </p>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
 
     </section>
 
@@ -252,42 +300,55 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
 
     <section className="py-20">
 
-      <div className="text-center mb-16">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeUp}
+        className="text-center mb-16"
+      >
         <h2 className="text-4xl md:text-5xl font-bold">
           Learn In Three Steps
         </h2>
-      </div>
+      </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="grid md:grid-cols-3 gap-8"
+      >
 
-        <div className="text-center">
+        <motion.div variants={fadeUp} className="text-center">
           <div className="text-6xl font-bold text-brand-indigo mb-4">
             01
           </div>
           <h3 className="text-xl font-semibold">
             Upload Video
           </h3>
-        </div>
+        </motion.div>
 
-        <div className="text-center">
+
+        <motion.div variants={fadeUp} className="text-center">
           <div className="text-6xl font-bold text-brand-pink mb-4">
             02
           </div>
           <h3 className="text-xl font-semibold">
             AI Processes Content
           </h3>
-        </div>
+        </motion.div>
 
-        <div className="text-center">
+        <motion.div variants={fadeUp} className="text-center">
           <div className="text-6xl font-bold text-brand-cyan mb-4">
             03
           </div>
           <h3 className="text-xl font-semibold">
             Start Studying
           </h3>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
 
     </section>
 
@@ -295,7 +356,13 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
 
     <section className="pb-24">
 
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-r from-brand-indigo/20 via-brand-violet/20 to-brand-pink/20 p-12 md:p-16 text-center">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        viewport={{ once: true, margin: "-100px" }}
+        className="rounded-[2rem] border border-white/10 bg-gradient-to-r from-brand-indigo/20 via-brand-violet/20 to-brand-pink/20 p-12 md:p-16 text-center"
+      >
 
         <Zap className="w-10 h-10 mx-auto text-brand-pink mb-6" />
 
@@ -315,12 +382,13 @@ return ( <div className="relative min-h-screen overflow-hidden bg-[#070B14] text
           <ArrowRight className="w-4 h-4" />
         </Link>
 
-      </div>
+      </motion.div>
 
     </section>
 
   </div>
 </div>
+
 
 
 );

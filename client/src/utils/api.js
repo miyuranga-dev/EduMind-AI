@@ -1,6 +1,11 @@
 import { MOCK_VIDEOS, getMockStudyMaterials } from "./mockData.js";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://192.168.1.4:5000/";
+let API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+// Dynamically use the network IP if accessing from a mobile phone or LAN device
+if (API_BASE_URL.includes("localhost") && window.location.hostname !== "localhost") {
+  API_BASE_URL = API_BASE_URL.replace("localhost", window.location.hostname);
+}
 
 // Helper to get headers
 const getHeaders = () => {

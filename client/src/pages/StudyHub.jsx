@@ -479,11 +479,11 @@ const StudyHub = () => {
       </div>
 
       {/* Main split work area */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden h-[calc(100vh-140px)] px-3">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 h-[calc(100vh-140px)] px-3">
         {/* Left Side: Video */}
-        <div className="lg:col-span-5 flex flex-col  justify-center border-r border-white/5 h-full overflow-y-auto">
+        <div className="lg:col-span-5 border-r border-white/5">
           {/* IFrame Video Player */}
-          <div className="aspect-video w-full bg-black relative border-b border-white/5">
+          <div className="aspect-video w-full bg-black relative border-b border-white/5 sticky top-40 p-5">
             <iframe
               ref={iframeRef}
               src={`https://www.youtube.com/embed/${video.videoId}?enablejsapi=1&origin=${window.location.origin}`}
@@ -496,7 +496,7 @@ const StudyHub = () => {
         </div>
 
         {/* Right Side: Study Workspaces */}
-        <div className="lg:col-span-7 flex flex-col h-full overflow-hidden bg-bg-darker">
+        <div className="lg:col-span-7 overflow-y-auto">
           {/* Tab Navigation */}
           <div className="flex border-b border-white/5 bg-zinc-950/30 overflow-x-auto shrink-0 scrollbar-none">
             {[

@@ -10,7 +10,12 @@ export const generateAllStudyMaterials = async (transcriptText) => {
 You are an expert tutor and study-note creator.
 Based on the following video transcript, generate comprehensive study materials.
 You MUST respond with a valid JSON object matching the following structure exactly. 
-Do NOT wrap the JSON in markdown blocks like \`\`\`json. Return ONLY the JSON object.
+
+CRITICAL JSON FORMATTING RULES:
+1. Do NOT wrap the JSON in markdown blocks like \`\`\`json.
+2. ALL newlines inside string values MUST be escaped as \\n. NEVER use raw newlines inside string values.
+3. Escape all double quotes inside string values as \\".
+4. Ensure the JSON is perfectly valid and strictly parseable.
 
 {
   "summary": "A concise, high-level summary of the video. Focus on main objectives, core concepts, and key conclusions. Keep it highly readable and under 3-4 paragraphs.",
@@ -45,7 +50,12 @@ ${transcriptText}
       },
     });
 
-    const result = JSON.parse(response.text);
+    let responseText = response.text;
+    
+    // Clean potential markdown wrappers and trailing commas
+    responseText = responseText.replace(/^```(json)?\n?/i, "").replace(/\n?```$/i, "").trim();
+    
+    const result = JSON.parse(responseText);
 
     // Validate the response structure
     if (
